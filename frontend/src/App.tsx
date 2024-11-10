@@ -52,6 +52,7 @@ export default function App() {
     const [graphData, setGraphData] = useState<(string | number)[][]>([
         ["", 2],
     ]);
+    const [threatData, setThreatData] = useState([])
 
     useEffect(() => {
         async function getGraphData() {
@@ -70,6 +71,17 @@ export default function App() {
                 console.log(graphData);
             } catch (e) {
                 console.error(e);
+            }
+        }
+
+        async function getThreatData() {
+            try {
+                const response = await fetch("/api/threats")
+                if (!response.ok) {
+                    throw new Error(`Response Status: ${response.status}`)
+                }
+                const json = await response.json
+                
             }
         }
 

@@ -94,11 +94,10 @@ def get_threat():
         q1 = data[int(len(data)*0.25)]
         q3 = data[int(len(data)*0.75)]
         iqr = q3 - q1
-        lower_bound = q1 - 1.5*iqr
         upper_bound = q3 + 1.5*iqr
 
         # Check if the last data point is an outlier or exceeds 100 requests
-        if graph_data[-1][1] < lower_bound or graph_data[-1][1] > upper_bound:
+        if graph_data[-1][1] > upper_bound:
             return jsonify({"threat": "yellow"})
         elif graph_data[-1][1] > 100:
             return jsonify({"threat": "red"})
