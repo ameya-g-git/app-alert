@@ -43,6 +43,8 @@ def get_request():
     traffic_data["requests"].append(request_data)
     update_last_five_sec_data()
 
+    return jsonify(traffic_data), 200
+
 @main.route('/traffic', methods=['GET'])
 def get_traffic():
     '''
@@ -99,11 +101,11 @@ def get_threat():
         if graph_data[-1][1] > upper_bound:
             current_threat = "yellow"
             message = "ALERT. Server is experiencing odd traffic!"
-        elif graph_data[-1][1] > 100:
+            threat_data.append([current_time, current_threat, message])
+        if graph_data[-1][1] > 100:
             current_threat = "red"
             message = "ALERT. ALERT. ALERT... Server is being overloaded!!!"
-
-    threat_data.append([current_time, current_threat, message])
+            threat_data.append([current_time, current_threat, message])
 
     return threat_data
 

@@ -51,11 +51,21 @@ import Threat from "./components/Threat";
 
 type Threat = [time: string, threat: string, message: string];
 
+interface Request {
+    ip: string;
+    timestamp: string;
+    endpoint: string;
+    method: string;
+    statusCode: number;
+    success: boolean;
+}
+
 export default function App() {
     const [graphData, setGraphData] = useState<(string | number)[][]>([
         ["", 2],
     ]);
     const [threatData, setThreatData] = useState<Threat[]>([]);
+    const [requestData, setRequestData] = useState([]);
 
     useEffect(() => {
         async function getGraphData() {
