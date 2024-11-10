@@ -8,7 +8,7 @@ interface ThreatProps {
 
 export default function Threat({ threat, message, timestamp }: ThreatProps) {
     const threatClasses = clsx({
-        "h-12 flex flex-row justify-between": true,
+        "min-h-12 flex flex-row justify-between": true,
         "bg-red-200": threat === "red",
         "bg-yellow-200": threat === "yellow",
         "bg-green-200": threat === "green",

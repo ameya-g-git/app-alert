@@ -105,7 +105,7 @@ def get_threat():
 
     threat_data.append([current_time, current_threat, message])
 
-    return jsonify({"threat": current_threat})
+    return threat_data
 
 if __name__ == '__main__':
     main.run(debug=True) # runs the flask app in debug mode

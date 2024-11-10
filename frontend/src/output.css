@@ -594,6 +594,10 @@ video {
   height: 3rem;
 }
 
+.min-h-12 {
+  min-height: 3rem;
+}
+
 .w-1\/2 {
   width: 50%;
 }
@@ -630,8 +634,20 @@ video {
   gap: 1rem;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .bg-black {

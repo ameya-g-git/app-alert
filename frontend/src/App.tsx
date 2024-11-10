@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import Chart from "react-google-charts";
+import Threat from "./components/Threat";
 
 //         // Request data is automatically logged by @main.before_request in backend
 
@@ -48,9 +49,7 @@ import Chart from "react-google-charts";
 //     }
 // }
 
-interface Threat {
-    threat: string;
-}
+type Threat = [time: string, threat: string, message: string];
 
 export default function App() {
     const [graphData, setGraphData] = useState<(string | number)[][]>([
@@ -72,7 +71,6 @@ export default function App() {
                 ]);
 
                 setGraphData(jsonFiltered);
-                console.log(graphData);
             } catch (e) {
                 console.error(e);
             }
@@ -80,11 +78,12 @@ export default function App() {
 
         async function getThreatData() {
             try {
-                const response = await fetch("/api/threats");
+                const response = await fetch("/api/threat");
                 if (!response.ok) {
                     throw new Error(`Response Status: ${response.status}`);
                 }
                 const json: Threat[] = await response.json();
+                console.log(threatData);
                 setThreatData(json);
             } catch (e) {
                 console.error(e);
@@ -101,7 +100,7 @@ export default function App() {
         return () => {
             clearTimeout(timer1);
         };
-    }, [graphData]);
+    }, [graphData, threatData]);
 
     return (
         <div className="w-screen h-screen p-8 overflow-hidden">
@@ -116,16 +115,23 @@ export default function App() {
                                 title: "Traffic",
                                 hAxis: { title: "Time" },
                                 vAxis: { title: "Requests / 5s" },
-                                legend: "none",
+                                legend: { position: "none" },
                             }}
                             width="100%"
                             height="100%"
                         />
                     </div>
-                    <div className="flex flex-col w-1/2 h-full bg-black">
-                        {threatData.map((threat) => {
-                            return <h1>{threat.threat}</h1>;
-                        })}
+                    <div className="flex flex-col w-1/2 h-full gap-1 overflow-y-scroll">
+                        {threatData.length != 0 &&
+                            threatData.map(([time, threat, message]) => {
+                                return (
+                                    <Threat
+                                        message={message}
+                                        threat={threat}
+                                        timestamp={time}
+                                    />
+                                );
+                            })}
                     </div>
                 </div>
                 <div className="flex flex-row w-full gap-4 h-[35%]">
