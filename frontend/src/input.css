@@ -3,5 +3,11 @@
 @tailwind utilities;
 
 * {
-    color: black;
+    padding: 0;
+    position: relative;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bolder;
 }
