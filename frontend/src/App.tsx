@@ -1,80 +1,73 @@
-import { useEffect, useState } from "react";
-
 // Function to call sample endpoint and log request
-async function callSampleEndpoint() {
-    try {
-        // Call the sample endpoint
-        const response = await fetch("http://localhost:4001/api/sample", {
-            method: "GET",
-        });
+// async function callSampleEndpoint() {
+//     try {
+//         // Call the sample endpoint
+//         const response = await fetch("http://localhost:4001/api/sample", {
+//             method: "GET",
+//         });
 
-        // Request data is automatically logged by @main.before_request in backend
+import Chart from "react-google-charts";
 
-        // Return the response data
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error:", error);
-        throw error;
-    }
-}
+//         // Request data is automatically logged by @main.before_request in backend
 
-// Function to get traffic data
-async function getTrafficData() {
-    try {
-        const response = await fetch("http://localhost:4001/api/traffic", {
-            method: "GET",
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error:", error);
-        throw error;
-    }
-}
+//         // Return the response data
+//         const data = await response.json();
+//         return data;
+//     } catch (error) {
+//         console.error("Error:", error);
+//         throw error;
+//     }
+// }
 
-// Function to check API health
-async function checkHealth() {
-    try {
-        const response = await fetch("http://localhost:4001/api/health", {
-            method: "GET",
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error:", error);
-        throw error;
-    }
-}
+// // Function to get traffic data
+// async function getTrafficData() {
+//     try {
+//         const response = await fetch("http://localhost:4001/api/traffic", {
+//             method: "GET",
+//         });
+//         const data = await response.json();
+//         return data;
+//     } catch (error) {
+//         console.error("Error:", error);
+//         throw error;
+//     }
+// }
+
+// // Function to check API health
+// async function checkHealth() {
+//     try {
+//         const response = await fetch("http://localhost:4001/api/health", {
+//             method: "GET",
+//         });
+//         const data = await response.json();
+//         return data;
+//     } catch (error) {
+//         console.error("Error:", error);
+//         throw error;
+//     }
+// }
 
 export default function App() {
-    const [traffic, setTraffic] = useState([]);
-
-    useEffect(() => {
-        // Get initial traffic data
-        getTrafficData().then((data) => setTraffic(data.requests || []));
-
-        // Make sample request
-        callSampleEndpoint();
-
-        // Check health
-        checkHealth();
-    }, []);
-
     return (
-        <div className="w-full h-full p-8">
-            <h1>Traffic Status</h1>
-            <button onClick={callSampleEndpoint}>Make Sample Request</button>
-
-            <div className="mt-4">
-                {traffic.map((request, index) => (
-                    <div key={index} className="mb-2">
-                        <p>IP: {request.ip}</p>
-                        <p>Time: {request.timestamp}</p>
-                        <p>Endpoint: {request.endpoint}</p>
-                        <p>Status: {request.statusCode}</p>
+        <div className="w-screen h-screen p-8 overflow-hidden">
+            <h1>Status</h1>
+            <div className="flex flex-col w-full h-full gap-4">
+                <div className="flex flex-row w-full gap-4 h-[55%]">
+                    <div className="w-1/2 h-full">
+                        <Chart
+                            chartType="Scatter"
+                            width="100%"
+                            height="100%"
+                            className="bg-red-500"
+                        />
                     </div>
-                ))}
+                    <div className="flex flex-col w-1/2 h-full bg-black"></div>
+                </div>
+                <div className="flex flex-row w-full gap-4 h-[35%]">
+                    <div className="w-1/3 h-full bg-red-300">hi</div>
+                    <div className="w-1/3 h-full bg-red-300">hi</div>
+                    <div className="w-1/3 h-full bg-red-300">hi</div>
+                </div>
             </div>
         </div>
     );
