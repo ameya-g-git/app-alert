@@ -18,16 +18,6 @@ def log_request():
     '''
     Logs traffic data before each request including IP, timestamp, endpoint, and status
     '''
-    request_data = {
-        "ip": request.remote_addr,
-        "timestamp": datetime.now().isoformat(),
-        "endpoint": request.path,
-        "method": request.method,
-        "statusCode": 200,  # Default success code
-        "success": True     # Default success state
-    }
-    traffic_data["requests"].append(request_data)
-    update_last_five_sec_data()
 
 def update_last_five_sec_data():
     '''
@@ -43,19 +33,20 @@ def update_last_five_sec_data():
     last_five_sec_data.append([now.isoformat(), len(recent_requests)])
    
 
-@main.route('/sample', methods=["GET"])
-def sample_endpoint():
-    '''
-    Initial endpoint that receives GET requests from frontend
-    Returns: Basic response to confirm functionality
-    '''
-    return jsonify(request_list)
-
-@main.route('/api/sample', methods=['POST'])
+@main.route('/traffic', methods=['POST'])
 def get_request():
     data = request.json
-
-    request_list.append(data)
+    
+    request_data = {
+        "ip": data["ip"],
+        "timestamp": datetime.now().isoformat(),
+        "endpoint": data["endpoint"],
+        "method": data["method"],
+        "statusCode": 200,  # Default success code
+        "success": True     # Default success state
+    }
+    traffic_data["requests"].append(request_data)
+    update_last_five_sec_data()
 
 @main.route('/traffic', methods=['GET'])
 def get_traffic():
