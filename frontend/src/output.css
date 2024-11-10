@@ -598,6 +598,10 @@ video {
   min-height: 3rem;
 }
 
+.min-h-16 {
+  min-height: 4rem;
+}
+
 .w-1\/2 {
   width: 50%;
 }
@@ -680,12 +684,21 @@ video {
   background-color: rgb(254 240 138 / var(--tw-bg-opacity));
 }
 
+.bg-orange-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(253 186 116 / var(--tw-bg-opacity));
+}
+
 .p-8 {
   padding: 2rem;
 }
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.font-bold {
+  font-weight: 700;
 }
 
 * {

@@ -50,7 +50,7 @@ def get_traffic():
     '''
     Returns traffic analytics with IP, timestamp, endpoint, status code and success
     '''
-    return jsonify(traffic_data)
+    return jsonify(traffic_data), 200
 
 @main.route('/health', methods=['GET'])
 def health_check():

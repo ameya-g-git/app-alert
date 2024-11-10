@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import Chart from "react-google-charts";
 import Threat from "./components/Threat";
+import Request from "./components/Request";
 
 //         // Request data is automatically logged by @main.before_request in backend
 
@@ -51,7 +52,7 @@ import Threat from "./components/Threat";
 
 type Threat = [time: string, threat: string, message: string];
 
-interface Request {
+export interface RequestData {
     ip: string;
     timestamp: string;
     endpoint: string;
@@ -65,7 +66,7 @@ export default function App() {
         ["", 2],
     ]);
     const [threatData, setThreatData] = useState<Threat[]>([]);
-    const [requestData, setRequestData] = useState([]);
+    const [requestData, setRequestData] = useState<RequestData[]>([]);
 
     useEffect(() => {
         async function getGraphData() {
@@ -100,9 +101,24 @@ export default function App() {
             }
         }
 
+        async function getRequestData() {
+            try {
+                const response = await fetch("/api/traffic");
+                if (!response.ok) {
+                    throw new Error(`Response Status: ${response.status}`);
+                }
+                const json: RequestData[] = await response.json();
+                console.log(json);
+                setRequestData(json.requests);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         async function getData() {
             getGraphData();
             getThreatData();
+            getRequestData();
         }
 
         const timer1 = setTimeout(getData, 5000);
@@ -145,7 +161,11 @@ export default function App() {
                     </div>
                 </div>
                 <div className="flex flex-row w-full gap-4 h-[35%]">
-                    <div className="w-1/3 h-full bg-red-300">hi</div>
+                    <div className="flex flex-col w-1/3 h-full gap-1">
+                        {requestData.map((req) => (
+                            <Request requestData={req} />
+                        ))}
+                    </div>
                     <div className="w-1/3 h-full bg-red-300">hi</div>
                     <div className="w-1/3 h-full bg-red-300">hi</div>
                 </div>
