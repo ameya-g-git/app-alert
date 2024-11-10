@@ -10,20 +10,22 @@ main = Blueprint('main',__name__)
 - details: List of request information including status codes'''
 traffic_data = {
     "requests": [],
-    "endpoints": {},
-    "details": []
 }
 
 @main.before_request
 def log_request():
     '''
-    Logs traffic data before each request, as it captures a timestamp, 
-    records the request path, and updates the endpoint counter.
+    Logs traffic data before each request including IP, timestamp, endpoint, and status
     '''
-    current_time = datetime.now().isoformat()
-    path = request.path 
-    traffic_data['requests'].append(current_time)
-    traffic_data['endpoints'][path] = traffic_data['endpoints'].get(path, 0) + 1
+    request_data = {
+        "ip": request.remote_addr,
+        "timestamp": datetime.now().isoformat(),
+        "endpoint": request.path,
+        "method": request.method,
+        "statusCode": 200,  # Default success code
+        "success": True     # Default success state
+    }
+    traffic_data["requests"].append(request_data)
 
 @main.route('/api/sample', methods=["GET"])
 def sample_endpoint():
@@ -33,31 +35,10 @@ def sample_endpoint():
     '''
     return jsonify({"message": "Sample response", "status": "success"})
 
-@main.route('/api/log', methods=['POST'])
-def log_request_details():
-    '''
-    Receives detailed request information from frontend
-    Payload expected:
-    {
-        "endpoint": str,    # The endpoint that was called
-        "statusCode": int,  # HTTP status code
-        "success": bool     # Whether request was successful
-    }
-    '''
-    request_info = request.get_json()
-    traffic_data['details'].append({
-        'timestamp': datetime.now().isoformat(),
-        'endpoint': request_info.get('endpoint'),
-        'statusCode': request_info.get('statusCode'),
-        'success': request_info.get('success')
-    })
-    return jsonify({"status": "logged"})
-
 @main.route('/api/traffic', methods=['GET'])
 def get_traffic():
     '''
-    Endpoint to retrieve traffic analytics data.
-    Returns: JSON containing requests list, endpoint counters, and details.
+    Returns traffic analytics with IP, timestamp, endpoint, status code and success
     '''
     return jsonify(traffic_data)
 
