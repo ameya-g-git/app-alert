@@ -50,7 +50,8 @@ import Chart from "react-google-charts";
 export default function App() {
     return (
         <div className="w-screen h-screen p-8 overflow-hidden">
-            <h1>Status</h1>
+            <h1 className="float-left">Status</h1>
+            <h1 className="float-right">Hello, &#123;user&#125;</h1>
             <div className="flex flex-col w-full h-full gap-4">
                 <div className="flex flex-row w-full gap-4 h-[55%]">
                     <div className="w-1/2 h-full">
