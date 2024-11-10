@@ -3,6 +3,7 @@ from flask_cors import CORS
 from datetime import datetime
 
 main = Blueprint('main',__name__)
+request_list = []
 
 '''Dictionary to store traffic analytics data:
 - requests: List of timestamp strings for all requests
@@ -33,7 +34,13 @@ def sample_endpoint():
     Initial endpoint that receives GET requests from frontend
     Returns: Basic response to confirm functionality
     '''
-    return jsonify({"message": "Sample response", "status": "success"})
+    return jsonify(request_list)
+
+@main.route('/api/sample', methods=['POST'])
+def get_request():
+    data = request.json
+
+    request_list.append(data)
 
 @main.route('/api/traffic', methods=['GET'])
 def get_traffic():
