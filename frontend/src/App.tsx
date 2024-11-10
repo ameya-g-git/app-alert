@@ -166,8 +166,12 @@ export default function App() {
                             <Request requestData={req} />
                         ))}
                     </div>
-                    <div className="w-1/3 h-full bg-red-300">hi</div>
-                    <div className="w-1/3 h-full bg-red-300">hi</div>
+                    <div className="flex items-center justify-center w-1/3 h-full bg-red-300 ">
+                        map showing request traffic geographically
+                    </div>
+                    <div className="flex items-center justify-center w-1/3 h-full bg-red-300">
+                        tracking of computer resources by the API
+                    </div>
                 </div>
             </div>
         </div>
