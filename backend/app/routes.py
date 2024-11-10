@@ -1,9 +1,8 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 from flask_cors import CORS
 from datetime import datetime
 
-app = Flask(__name__)
-CORS(app) # enables frontend
+main = Blueprint('main',__name__)
 
 '''Dictionary to store traffic analytics data:
 - requests: List of timestamp strings for all requests
@@ -15,7 +14,7 @@ traffic_data = {
     "details": []
 }
 
-@app.before_request
+@main.before_request
 def log_request():
     '''
     Logs traffic data before each request, as it captures a timestamp, 
@@ -26,7 +25,7 @@ def log_request():
     traffic_data['requests'].append(current_time)
     traffic_data['endpoints'][path] = traffic_data['endpoints'].get(path, 0) + 1
 
-@app.route('/api/sample', methods=["GET"])
+@main.route('/api/sample', methods=["GET"])
 def sample_endpoint():
     '''
     Initial endpoint that receives GET requests from frontend
@@ -34,7 +33,7 @@ def sample_endpoint():
     '''
     return jsonify({"message": "Sample response", "status": "success"})
 
-@app.route('/api/log', methods=['POST'])
+@main.route('/api/log', methods=['POST'])
 def log_request_details():
     '''
     Receives detailed request information from frontend
@@ -54,7 +53,7 @@ def log_request_details():
     })
     return jsonify({"status": "logged"})
 
-@app.route('/api/traffic', methods=['GET'])
+@main.route('/api/traffic', methods=['GET'])
 def get_traffic():
     '''
     Endpoint to retrieve traffic analytics data.
@@ -62,7 +61,7 @@ def get_traffic():
     '''
     return jsonify(traffic_data)
 
-@app.route('/api/health', methods=['GET'])
+@main.route('/api/health', methods=['GET'])
 def health_check():
     '''
     Health check endpoint.
@@ -71,4 +70,4 @@ def health_check():
     return jsonify({"status": "ok"})
 
 if __name__ == '__main__':
-    app.run(debug=True) # runs the flask app in debug mode
+    main.run(debug=True) # runs the flask app in debug mode
