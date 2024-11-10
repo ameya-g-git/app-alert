@@ -5,33 +5,15 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app) # enables frontend
 
-'''
-Dictionary to store traffic analytics data:
+'''Dictionary to store traffic analytics data:
 - requests: List of timestamp strings for all requests
 - endpoints: Dict mapping endpoint paths to request counts
-
-This should allow for:
-    - frontend fetching
-    - total request volume over time 
-    - most accessed endpoints
-    - traffic patterns 
-'''
+- details: List of request information including status codes'''
 traffic_data = {
     "requests": [],
-    "endpoints": {}
+    "endpoints": {},
+    "details": []
 }
-
-'''
-Example Output:
-traffic_data = {
-    'requests': ['2024-03-20T14:30:25', '2024-03-20T14:31:00'],
-    'endpoints': {
-        '/api/health': 5,
-        '/api/traffic': 2,
-        '/api/other': 1
-    }
-}
-'''
 
 @app.before_request
 def log_request():
@@ -41,14 +23,42 @@ def log_request():
     '''
     current_time = datetime.now().isoformat()
     path = request.path 
-    traffic_data['requests'].append(current_time) # adds timestamp to list
-    traffic_data['endpoints'][path] = traffic_data['endpoints'].get(path, 0) + 1 # adds counter
+    traffic_data['requests'].append(current_time)
+    traffic_data['endpoints'][path] = traffic_data['endpoints'].get(path, 0) + 1
+
+@app.route('/api/sample', methods=["GET"])
+def sample_endpoint():
+    '''
+    Initial endpoint that receives GET requests from frontend
+    Returns: Basic response to confirm functionality
+    '''
+    return jsonify({"message": "Sample response", "status": "success"})
+
+@app.route('/api/log', methods=['POST'])
+def log_request_details():
+    '''
+    Receives detailed request information from frontend
+    Payload expected:
+    {
+        "endpoint": str,    # The endpoint that was called
+        "statusCode": int,  # HTTP status code
+        "success": bool     # Whether request was successful
+    }
+    '''
+    request_info = request.get_json()
+    traffic_data['details'].append({
+        'timestamp': datetime.now().isoformat(),
+        'endpoint': request_info.get('endpoint'),
+        'statusCode': request_info.get('statusCode'),
+        'success': request_info.get('success')
+    })
+    return jsonify({"status": "logged"})
 
 @app.route('/api/traffic', methods=['GET'])
 def get_traffic():
     '''
     Endpoint to retrieve traffic analytics data.
-    Returns: JSON containing requests list and endpoint counters.
+    Returns: JSON containing requests list, endpoint counters, and details.
     '''
     return jsonify(traffic_data)
 
