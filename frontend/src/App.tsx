@@ -48,11 +48,15 @@ import Chart from "react-google-charts";
 //     }
 // }
 
+interface Threat {
+    threat: string;
+}
+
 export default function App() {
     const [graphData, setGraphData] = useState<(string | number)[][]>([
         ["", 2],
     ]);
-    const [threatData, setThreatData] = useState([])
+    const [threatData, setThreatData] = useState<Threat[]>([]);
 
     useEffect(() => {
         async function getGraphData() {
@@ -76,16 +80,23 @@ export default function App() {
 
         async function getThreatData() {
             try {
-                const response = await fetch("/api/threats")
+                const response = await fetch("/api/threats");
                 if (!response.ok) {
-                    throw new Error(`Response Status: ${response.status}`)
+                    throw new Error(`Response Status: ${response.status}`);
                 }
-                const json = await response.json
-                
+                const json: Threat[] = await response.json();
+                setThreatData(json);
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        const timer1 = setTimeout(getGraphData, 5000);
+        async function getData() {
+            getGraphData();
+            getThreatData();
+        }
+
+        const timer1 = setTimeout(getData, 5000);
 
         return () => {
             clearTimeout(timer1);
@@ -111,7 +122,11 @@ export default function App() {
                             height="100%"
                         />
                     </div>
-                    <div className="flex flex-col w-1/2 h-full bg-black"></div>
+                    <div className="flex flex-col w-1/2 h-full bg-black">
+                        {threatData.map((threat) => {
+                            return <h1>{threat.threat}</h1>;
+                        })}
+                    </div>
                 </div>
                 <div className="flex flex-row w-full gap-4 h-[35%]">
                     <div className="w-1/3 h-full bg-red-300">hi</div>
