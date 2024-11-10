@@ -14,12 +14,6 @@ graph_data = []
 last_five_sec_data = []
 threat_data = []
 
-@main.before_request
-def log_request():
-    '''
-    Logs traffic data before each request including IP, timestamp, endpoint, and status
-    '''
-
 def update_last_five_sec_data():
     '''
     Updates the last five seconds of data with the number of requests
@@ -90,6 +84,7 @@ def get_threat():
     '''
     current_time = datetime.now().isoformat()
     current_threat = "green"
+    message = "Server is doing great!"
 
     if len(graph_data) >= 4:
         # Calculate IQR to detect outliers in traffic data
@@ -103,10 +98,12 @@ def get_threat():
         # Check if the last data point is an outlier or exceeds 100 requests
         if graph_data[-1][1] > upper_bound:
             current_threat = "yellow"
+            message = "ALERT. Server is experiencing odd traffic!"
         elif graph_data[-1][1] > 100:
             current_threat = "red"
+            message = "ALERT. ALERT. ALERT... Server is being overloaded!!!"
 
-    threat_data.append([current_time, current_threat])
+    threat_data.append([current_time, current_threat, message])
 
     return jsonify({"threat": current_threat})
 
