@@ -566,12 +566,12 @@ video {
   display: flex;
 }
 
-.h-\[35\%\] {
-  height: 35%;
+.h-\[40\%\] {
+  height: 40%;
 }
 
-.h-\[55\%\] {
-  height: 55%;
+.h-\[60\%\] {
+  height: 60%;
 }
 
 .h-full {
@@ -580,6 +580,14 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-\[35\%\] {
+  height: 35%;
+}
+
+.h-\[55\%\] {
+  height: 55%;
 }
 
 .w-1\/2 {
@@ -596,6 +604,10 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-11\/12 {
+  width: 91.666667%;
 }
 
 .flex-row {
@@ -633,8 +645,8 @@ video {
   padding: 2rem;
 }
 
-.text-center {
-  text-align: center;
+.p-2 {
+  padding: 0.5rem;
 }
 
 * {

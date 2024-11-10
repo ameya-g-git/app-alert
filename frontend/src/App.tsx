@@ -6,6 +6,7 @@
 //             method: "GET",
 //         });
 
+import { useEffect, useState } from "react";
 import Chart from "react-google-charts";
 
 //         // Request data is automatically logged by @main.before_request in backend
@@ -48,18 +49,49 @@ import Chart from "react-google-charts";
 // }
 
 export default function App() {
+    const [graphData, setGraphData] = useState([
+        ["Time", "Requests / 5s"],
+        [1, 2],
+    ]);
+
+    useEffect(() => {
+        async function getGraphData() {
+            try {
+                const response = await fetch("/api/traffic");
+                if (!response.ok) {
+                    throw new Error(`Response Status: ${response.status}`);
+                }
+                const json = await response.json();
+                setGraphData(json);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        const timer1 = setTimeout(getGraphData, 5000);
+
+        return () => {
+            clearTimeout(timer1);
+        };
+    }, [graphData]);
+
     return (
         <div className="w-screen h-screen p-8 overflow-hidden">
-            <h1 className="float-left">Status</h1>
-            <h1 className="float-right">Hello, &#123;user&#125;</h1>
+            <h1>Status</h1>
             <div className="flex flex-col w-full h-full gap-4">
                 <div className="flex flex-row w-full gap-4 h-[55%]">
                     <div className="w-1/2 h-full">
                         <Chart
-                            chartType="Scatter"
+                            chartType="LineChart"
+                            data={graphData}
+                            options={{
+                                title: "Traffic",
+                                hAxis: { title: "Time" },
+                                vAxis: { title: "Requests / 5s" },
+                                legend: "none",
+                            }}
                             width="100%"
                             height="100%"
-                            className="bg-red-500"
                         />
                     </div>
                     <div className="flex flex-col w-1/2 h-full bg-black"></div>
