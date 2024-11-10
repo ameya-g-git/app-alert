@@ -72,7 +72,11 @@ def get_graph_data():
         request_count = len(last_five_sec_data)
         timestamp = last_five_sec_data[-1][0] # gets the last timestamp
         graph_data.append([timestamp, request_count])
-        last_five_sec_data.clear()  # Clear the last five seconds data
+    else:
+        graph_data.append(["eoijrg", 0])
+    
+    
+    last_five_sec_data.clear()  # Clear the last five seconds data
     return jsonify(graph_data)
 
 @main.route('/threat', methods=['GET'])

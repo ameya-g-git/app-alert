@@ -49,20 +49,25 @@ import Chart from "react-google-charts";
 // }
 
 export default function App() {
-    const [graphData, setGraphData] = useState([
-        ["Time", "Requests / 5s"],
-        [1, 2],
+    const [graphData, setGraphData] = useState<(string | number)[][]>([
+        ["", 2],
     ]);
 
     useEffect(() => {
         async function getGraphData() {
             try {
-                const response = await fetch("/api/traffic");
+                const response = await fetch("/api/graph");
                 if (!response.ok) {
                     throw new Error(`Response Status: ${response.status}`);
                 }
-                const json = await response.json();
-                setGraphData(json);
+                const json: number[][] = await response.json();
+                const jsonFiltered = json.map((xy: number[], i) => [
+                    i * 5,
+                    xy[1],
+                ]);
+
+                setGraphData(jsonFiltered);
+                console.log(graphData);
             } catch (e) {
                 console.error(e);
             }
@@ -82,8 +87,8 @@ export default function App() {
                 <div className="flex flex-row w-full gap-4 h-[55%]">
                     <div className="w-1/2 h-full">
                         <Chart
-                            chartType="LineChart"
-                            data={graphData}
+                            chartType="Line"
+                            data={[["Time", "Requests / 5s"], ...graphData]}
                             options={{
                                 title: "Traffic",
                                 hAxis: { title: "Time" },
