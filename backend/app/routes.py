@@ -12,6 +12,7 @@ traffic_data = {
 
 graph_data = []
 last_five_sec_data = []
+threat_data = []
 
 @main.before_request
 def log_request():
@@ -87,6 +88,9 @@ def get_threat():
         - Yellow: find outlier in traffic data using IQR
         - Green: server status is normal
     '''
+    current_time = datetime.now().isoformat()
+    current_threat = "green"
+
     if len(graph_data) >= 4:
         # Calculate IQR to detect outliers in traffic data
         data = [point[1] for point in graph_data]
@@ -98,13 +102,13 @@ def get_threat():
 
         # Check if the last data point is an outlier or exceeds 100 requests
         if graph_data[-1][1] > upper_bound:
-            return jsonify({"threat": "yellow"})
+            current_threat = "yellow"
         elif graph_data[-1][1] > 100:
-            return jsonify({"threat": "red"})
-        else:
-            return jsonify({"threat": "green"})
-    else:
-        return jsonify({"threat": "green"})
+            current_threat = "red"
+
+    threat_data.append([current_time, current_threat])
+
+    return jsonify({"threat": current_threat})
 
 if __name__ == '__main__':
     main.run(debug=True) # runs the flask app in debug mode
