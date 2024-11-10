@@ -75,5 +75,33 @@ def get_graph_data():
         last_five_sec_data.clear()  # Clear the last five seconds data
     return jsonify(graph_data)
 
+@main.route('/threat', methods=['GET'])
+def get_threat():
+    '''
+    Returns the threat level based on:
+        - Red: if traffic exceeds > 100 requests in the last 5 seconds
+        - Yellow: find outlier in traffic data using IQR
+        - Green: server status is normal
+    '''
+    if len(graph_data) >= 4:
+        # Calculate IQR to detect outliers in traffic data
+        data = [point[1] for point in graph_data]
+        data.sort()
+        q1 = data[int(len(data)*0.25)]
+        q3 = data[int(len(data)*0.75)]
+        iqr = q3 - q1
+        lower_bound = q1 - 1.5*iqr
+        upper_bound = q3 + 1.5*iqr
+
+        # Check if the last data point is an outlier or exceeds 100 requests
+        if graph_data[-1][1] < lower_bound or graph_data[-1][1] > upper_bound:
+            return jsonify({"threat": "yellow"})
+        elif graph_data[-1][1] > 100:
+            return jsonify({"threat": "red"})
+        else:
+            return jsonify({"threat": "green"})
+    else:
+        return jsonify({"threat": "green"})
+
 if __name__ == '__main__':
     main.run(debug=True) # runs the flask app in debug mode
